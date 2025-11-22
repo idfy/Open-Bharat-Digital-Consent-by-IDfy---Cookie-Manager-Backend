@@ -1,0 +1,56 @@
+{
+    "name": "cookie_manager_backend",
+    "version": "2.2.0",
+    "description": "",
+    "main": "app.js",
+    "type": "module",
+    "engines": {
+        "node": "22.0.0"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "find-circular-deps": "madge . -c",
+        "lint": "eslint . --ignore-pattern 'static/*'",
+        "lint:fix": "eslint --fix ./*.js",
+        "seed_local_dev": "node seeders/main.seeders.js local_dev.seeders",
+        "seed_staging": "node seeders/main.seeders.js staging.seeders",
+        "seed_production": "node seeders/main.seeders.js production.seeders"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@google-cloud/translate": "^9.2.0",
+        "@prisma/client": "^5.22.0",
+        "amqplib": "^0.10.5",
+        "axios": "^1.7.9",
+        "body-parser": "^1.20.2",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "csv-parser": "^3.2.0",
+        "dotenv": "^16.4.7",
+        "express": "^4.18.2",
+        "fs": "^0.0.1-security",
+        "javascript-obfuscator": "^4.1.1",
+        "joi": "^17.13.3",
+        "jose": "^6.1.2",
+        "lodash": "^4.17.21",
+        "morgan": "^1.10.0",
+        "multer": "^2.0.2",
+        "openai": "^4.83.0",
+        "uuid": "^10.0.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.57.1",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-n": "^16.6.2",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^6.1.1",
+        "madge": "^6.1.0",
+        "prisma": "^5.22.0"
+    },
+    "overrides": {
+        "glob": "12.0.0"
+    }
+}
