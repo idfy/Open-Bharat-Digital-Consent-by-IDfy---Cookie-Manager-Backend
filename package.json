@@ -20,6 +20,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@auth/core": "^0.41.1",
         "@google-cloud/translate": "^9.2.0",
         "@prisma/client": "^5.22.0",
         "amqplib": "^0.10.5",
@@ -33,11 +34,9 @@
         "fs": "^0.0.1-security",
         "javascript-obfuscator": "^4.1.1",
         "joi": "^17.13.3",
-        "jose": "^6.1.2",
         "lodash": "^4.17.21",
         "morgan": "^1.10.0",
         "multer": "^2.0.2",
-        "openai": "^4.83.0",
         "uuid": "^10.0.0"
     },
     "devDependencies": {
