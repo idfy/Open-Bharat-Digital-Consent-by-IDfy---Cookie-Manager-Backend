@@ -51,5 +51,5 @@ PROJECT_ID='idfy-data-lake-staging'
 SCAN_ACCESS_ROLES='privy_cm_scan_operator'
 EDITOR_ROLE='privy_cm_editor'
 ARCHIVAL_ACCESS_ROLES='privy_cm_admin'
-AUTH_SECRET='abdhbasdjhbgfkjb'
+AUTH_SECRET='secret'
 ```
