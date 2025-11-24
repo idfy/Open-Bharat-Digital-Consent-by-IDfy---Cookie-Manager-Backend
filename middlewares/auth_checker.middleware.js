@@ -18,7 +18,12 @@ async function sessionChecker(req, res, next) {
         redirection: true,
         data: { redirect_url: AUTH_REDIRECT_ENDPOINT }
     }
+    console.log('__Secure-authjs.session-token', req.cookies['__Secure-authjs.session-token'])
+    console.log('authjs.session-token', req.cookies['authjs.session-token'])
+
     const idTokenEncoded = req.cookies['__Secure-authjs.session-token'] || req.cookies['authjs.session-token']
+    console.log('idTokenEncoded', idTokenEncoded)
+
     if (!idTokenEncoded) {
         console.error('Failed', 'EMPTY_ID_TOKEN')
         redirectionData.message = 'No authentication token'

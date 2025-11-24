@@ -16,10 +16,8 @@
 ## Run the application
 
 -   To install all the dependencies run the command `npm install`
--   Also install nodemon globally we can do that using the `npm install -g nodemon`
 -   Migrate the tables using `npx prisma migrate deploy`
--   Using the seeder run `npm run seed_local_dev`
--   To run the server run the command `nodemon app.js`
+-   To run the server run the command `node app.js`
 -   On local machine it's on port 5000 so you can use `localhost:5000`
 
 ## ENVS
