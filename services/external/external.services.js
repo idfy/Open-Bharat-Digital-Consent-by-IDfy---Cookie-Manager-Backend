@@ -9,6 +9,7 @@ import { setCache, getCache } from './lru_cache.services.js'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { NotFoundError } from '../custom_error.js'
+import { createEventAnalytics } from './event_analytics.services.js'
 const PROJECT_ROOT = path.resolve(process.cwd())
 
 async function serveJSFile(bannerId) {
@@ -131,7 +132,7 @@ async function submitConsents(bannerId, userPreference, metadata, dataPrincipalI
     }
 }
 
-function userClickHandler(bannerId, dataPrincipalId, userEvent, sessionId) {
+async function userClickHandler(bannerId, dataPrincipalId, userEvent, sessionId) {
     const start = process.hrtime.bigint() // Capture high-resolution start time
     const logDict = {
         service: 'UserClickHandler',
@@ -169,6 +170,13 @@ function userClickHandler(bannerId, dataPrincipalId, userEvent, sessionId) {
         opts['tags']['tat'] = {
             'units': durationMs.toFixed(2)
         }
+        const events = {
+            banner_id: bannerId,
+            data_principal_id: dataPrincipalId,
+            user_event: userEvent,
+            session_id: sessionId
+        }
+        await createEventAnalytics(events)
         logger('info', 'Success', logDict, true, opts)
     } catch (error) {
         const durationMs = Number(process.hrtime.bigint() - start) / 1_000_000 // Convert nanoseconds to ms
