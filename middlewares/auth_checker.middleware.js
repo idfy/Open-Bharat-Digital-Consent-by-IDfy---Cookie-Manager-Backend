@@ -21,7 +21,8 @@ async function sessionChecker(req, res, next) {
     console.log('__Secure-authjs.session-token', req.cookies['__Secure-authjs.session-token'])
     console.log('authjs.session-token', req.cookies['authjs.session-token'])
 
-    const idTokenEncoded = req.cookies['__Secure-authjs.session-token'] || req.cookies['authjs.session-token']
+    const tokenCookieName = req.cookies['__Secure-authjs.session-token'] ? '__Secure-authjs.session-token' : 'authjs.session-token'
+    const idTokenEncoded = req.cookies[tokenCookieName]
     console.log('idTokenEncoded', idTokenEncoded)
 
     if (!idTokenEncoded) {
@@ -34,7 +35,7 @@ async function sessionChecker(req, res, next) {
         const payload = await decode({
             token: idTokenEncoded,
             secret: AUTH_SECRET,
-            salt: 'authjs.session-token'
+            salt: tokenCookieName
         })
         const roles = payload.roles?.map((r) => r.role.name) || []
         const currentTime = Math.floor(Date.now() / 1000)
