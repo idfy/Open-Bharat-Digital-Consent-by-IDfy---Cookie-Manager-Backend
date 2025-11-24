@@ -1,31 +1,46 @@
 import { VALID_ROLES_SET, AUTH_SECRET } from '../services/constants.js'
-import { CompactEncrypt } from 'jose'
-
-const encoder = new TextEncoder()
-const secretKey = encoder.encode(AUTH_SECRET) // must match jwtDecrypt EXACTLY
+import { encode } from '@auth/core/jwt'
 
 async function setDummySession(req, res, next) {
     if (process.env.NODE_ENV === 'development') {
+        const roles = Array.from(VALID_ROLES_SET).map((roleName, index) => ({
+            'id': `role-${index}-${Date.now()}`,
+            'userId': 'b1c5c4ba-33a0-4bb1-8bda-3eb840473cf2',
+            'roleId': `role-id-${index}`,
+            'assignedAt': new Date().toISOString(),
+            'assignedBy': null,
+            'role': {
+                'id': `role-id-${index}`,
+                'name': roleName,
+                'description': `${roleName} role with full system access`,
+                'createdAt': new Date().toISOString(),
+                'updatedAt': new Date().toISOString()
+            }
+        }))
+
         const dummyPayload = {
-            roles: Array.from(VALID_ROLES_SET),
-            user_id: '1150e434-ccd3-4bc8-a51a-74015b5b24fb'
+            'name': 'IDfy Tech',
+            'email': 'tech@idfy.com',
+            'sub': 'b1c5c4ba-33a0-4bb1-8bda-3eb840473cf2',
+            'id': 'b1c5c4ba-33a0-4bb1-8bda-3eb840473cf2',
+            roles,
+            'iat': Math.floor(Date.now() / 1000),
+            'exp': Math.floor(Date.now() / 1000) + 1000,
+            'jti': 'b3415f36-f0b9-4f71-86ea-cbc77119d9e2'
         }
-
-        const payloadBytes = encoder.encode(JSON.stringify(dummyPayload))
-
-        const encryptedToken = await new CompactEncrypt(payloadBytes)
-            .setProtectedHeader({
-                alg: 'dir',
-                enc: 'A128GCM' // must match production encryption
-            })
-            .encrypt(secretKey)
-
+        // Use NextAuth's encode function to create a properly formatted session token
+        const encryptedToken = await encode({
+            token: dummyPayload,
+            secret: AUTH_SECRET,
+            salt: 'authjs.session-token',
+            maxAge: 30 * 60 // 30 minutes
+        })
         req.cookies = req.cookies || {}
         req.cookies['__Secure-authjs.session-token'] = encryptedToken
 
         req.current_user = {
-            roles: dummyPayload.roles,
-            account_id: dummyPayload.user_id
+            roles: Array.from(VALID_ROLES_SET),
+            account_id: dummyPayload.id
         }
     }
 

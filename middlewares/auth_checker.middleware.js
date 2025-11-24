@@ -1,16 +1,14 @@
 import { AUTH_REDIRECT_ENDPOINT, VALID_ROLES_SET, AUTH_SECRET } from '../services/constants.js'
-import { jwtDecrypt } from 'jose'
-
-const secret = new TextEncoder().encode(AUTH_SECRET)
+import { decode } from '@auth/core/jwt'
 
 function validateRoles(roles) {
     return Array.isArray(roles) && roles.some((role) => VALID_ROLES_SET.has(role))
 }
 
-function createUserInfo(payload) {
+function createUserInfo(payload, roles) {
     return {
-        roles: payload.roles,
-        account_id: payload.user_id
+        roles,
+        account_id: payload.id
     }
 }
 
@@ -27,15 +25,21 @@ async function sessionChecker(req, res, next) {
         return res.status(401).json(redirectionData)
     }
     try {
-        const { payload } = await jwtDecrypt(idTokenEncoded, secret)
-        console.log('Decrypted payload:', payload)
-        if (!payload.roles || !payload.user_id || !validateRoles(payload.roles)) {
+        // Use NextAuth's decode function which handles key derivation automatically
+        const payload = await decode({
+            token: idTokenEncoded,
+            secret: AUTH_SECRET,
+            salt: 'authjs.session-token'
+        })
+        const roles = payload.roles?.map((r) => r.role.name) || []
+        const currentTime = Math.floor(Date.now() / 1000)
+        if (!payload?.id || !validateRoles(roles) || !payload?.exp || currentTime >= payload.exp) {
             console.error('Failed', 'INVALID_TOKEN_CONTENTS')
             redirectionData.message = 'Invalid token'
             return res.status(403).json(redirectionData)
         }
 
-        req.current_user = createUserInfo(payload)
+        req.current_user = createUserInfo(payload, roles)
         next()
     } catch (error) {
         console.log('Exception', 'TOKEN_DECODE_ERROR', { error: error.message })
@@ -44,4 +48,3 @@ async function sessionChecker(req, res, next) {
     }
 }
 export { sessionChecker }
-
