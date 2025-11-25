@@ -38,11 +38,11 @@ async function serveJSFile(bannerId) {
         let jsFile = null
         const absolutePath = path.join(PROJECT_ROOT, jsPath)
         try {
-            jsFile = readFile(absolutePath, 'utf8')
+            jsFile = await readFile(absolutePath, 'utf8')
         } catch (e) {
             // 4. File not found → run your fallback logic
             console.error(`File not found locally for ${jsPath}, running fallback logic`)
-            jsFile = makeJSFile(
+            jsFile = await makeJSFile(
                 dbBannerDetails.scan_id,
                 dbBannerDetails.domain_id,
                 dbBannerDetails.banner_id,
