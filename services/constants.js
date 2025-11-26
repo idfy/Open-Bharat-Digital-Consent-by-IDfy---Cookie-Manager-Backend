@@ -1,3 +1,14 @@
+/**
+ * Privy-OpenCMS
+ * Copyright (c) 2025 Baldor Technologies Private Limited (IDfy)
+ * 
+ * This software is licensed under the Privy Public License.
+ * See LICENSE.md for the full terms of use.
+ * 
+ * Unauthorized copying, modification, distribution, or commercial use
+ * is strictly prohibited without prior written permission from IDfy.
+ */
+
 import 'dotenv/config'
 export const ADDED_BY_USER = 'MANUAL'
 export const ADDED_BY_SCAN = 'SCAN'
