@@ -43,10 +43,10 @@ function addUrlsToMapping(urls, category, type, urlsMapping) {
     })
 }
 
-function scriptHandler(template, categorizedCookies, path, bannerId) {
+function scriptHandler(template, categorizedCookies, path, bannerId, cookiePolicy) {
     try {
         const urlsMapping = mapUrlsToCategories(categorizedCookies)
-        const jsContent = createBannerJsFile(template, categorizedCookies, bannerId, urlsMapping)
+        const jsContent = createBannerJsFile(template, categorizedCookies, bannerId, urlsMapping, cookiePolicy)
         return jsContent
     } catch (error) {
         throw UnexpectedError('Error in uploadFileStream', 500, {

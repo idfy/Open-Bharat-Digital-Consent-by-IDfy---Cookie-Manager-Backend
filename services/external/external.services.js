@@ -9,7 +9,7 @@ import { setCache, getCache } from './lru_cache.services.js'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { NotFoundError } from '../custom_error.js'
-import { createEventAnalytics } from './event_analytics.services.js'
+import { createEventAnalytics } from '../db/event_analytics.services.js'
 const PROJECT_ROOT = path.resolve(process.cwd())
 
 async function serveJSFile(bannerId) {

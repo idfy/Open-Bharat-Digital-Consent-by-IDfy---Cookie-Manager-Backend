@@ -58,7 +58,7 @@ export const nonIabBottomPanel = `
         <span><a href="https://www.privybyidfy.com/" target="_blank">${getPrivyLogoSvg()}</a></span>
     </div>
 `
-export function bannerInitialScreen0(languagesMap) {
+export function bannerInitialScreen0(languagesMap, cookiePolicy) {
     const showLanguageButton = Object.keys(languagesMap).length > 1
     return `
     <div class="idfy-\${template.bannerType}-privy-cmp-AE1VSVI8T5" id="banner-home-privy-cmp-AE1VSVI8T5">
@@ -72,7 +72,9 @@ export function bannerInitialScreen0(languagesMap) {
                 ` : ''}
             </div>
             <div class="\${template.bannerType}-inner-privy-cmp-AE1VSVI8T5">
-                <p class="description-privy-cmp-AE1VSVI8T5 \${template.bannerType}-desc-privy-cmp-AE1VSVI8T5" >\${template.text[languageEnum].contentDesktop.cookieBannerNotice}</p>
+                <p class="description-privy-cmp-AE1VSVI8T5 \${template.bannerType}-desc-privy-cmp-AE1VSVI8T5" >\${template.text[languageEnum].contentDesktop.cookieBannerNotice} 
+                ${cookiePolicy && cookiePolicy.trim() !== '' ? `<a href="${cookiePolicy}" target="_blank" rel="noopener noreferrer">Cookie Policy</a>` : ''}
+            </p>
                 <div class="\${template.bannerType}-button-container-privy-cmp-AE1VSVI8T5">
                     <button onclick="submitConsentHandler('all')" id="allow-btn-privy-cmp-AE1VSVI8T5" class="\${template.bannerType}-button-privy-cmp-AE1VSVI8T5">\${template.text[languageEnum].buttonsText.acceptAll}</button>
                     <button onclick="submitConsentHandler('necessary')" class="\${template.bannerType}-button-privy-cmp-AE1VSVI8T5">\${template.text[languageEnum].buttonsText.allowNecessary}</button>
