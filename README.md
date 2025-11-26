@@ -20,6 +20,11 @@
 -   To run the server run the command `node app.js`
 -   On local machine it's on port 5000 so you can use `localhost:5000`
 
+## ️Tech Stack
+
+Framework: ExpressJs (Nodejs)
+Database: PostgreSQL
+
 ## ENVS
 
 ```
@@ -27,9 +32,9 @@ APP_BASE_URL="http:localhost:3000"
 APP_BASE_URL_API="http:localhost:3000"
 AUTH_REDIRECT_ENDPOINT="https://privy-cookie-manager.idfystaging.com/dashboard/login"
 AUTH_SUCCESS_ENDPOINT="https://privy-cookie-manager.idfystaging.com/dashboard"
-DATABASE_URL="postgresql://sanketsaboo:@localhost:5432/cookie_manager_meity?schema=public&connection_limit=10&connect_timeout=10&application_name=prisma-client"
+DATABASE_URL="postgresql://user:@localhost:5432/cookie_manager_meity?schema=public&connection_limit=10&connect_timeout=10&application_name=prisma-client"
 FILE_SIZE_MB="10"
-GOOGLE_APPLICATION_CREDENTIALS="/Users/sanketsaboo/Desktop/privy-labs/sanket-idfy-data-lake-staging-service-account.json"
+GOOGLE_APPLICATION_CREDENTIALS="/Users/service-account.json"
 INSTRUMENTER_LOG="true"
 INSTRUMENTER_LOG_FALSE="false"
 INSTRUMENTER_PUBLISH="true"
@@ -43,9 +48,9 @@ INSTRUMENTER_COMPONENT="CookieManager"
 NODE_ENV="development"
 PORT="3000"
 VALID_ROLES='privy_cm_editor,privy_cm_admin,privy_cm_scan_operator'
-ENABLE_CORS_URLS='https://cookie-manager.sanketsaboo.com,https://privytest.store,https://uat.axisbank.com,http://localhost:3001,http://localhost:5173'
+ENABLE_CORS_URLS='http://localhost:3001,http://localhost:5173'
 OBFUSCATE_JS_FILE="true"
-PROJECT_ID='idfy-data-lake-staging'
+PROJECT_ID='project-id'
 SCAN_ACCESS_ROLES='privy_cm_scan_operator'
 EDITOR_ROLE='privy_cm_editor'
 ARCHIVAL_ACCESS_ROLES='privy_cm_admin'
