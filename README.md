@@ -1,6 +1,23 @@
 # Cookie Manager Backend
 
-## Installations
+## Overview
+
+Cookie Manager Backend is a comprehensive Node.js/Express application that manages cookie consent, banners, and domain configurations for the Privy Cookie Manager system. It provides APIs for managing cookie consents, templates, translations, and external integrations with a focus on data privacy and compliance.
+
+## Features
+
+-   **Cookie Consent Management**: Track and manage user cookie preferences across domains
+-   **Banner Management**: Create, manage, and serve customizable cookie banners
+-   **Domain Management**: Configure and manage domains for cookie consent
+-   **Template System**: Template-based banner creation with customizable elements
+-   **Multi-language Support**: Built-in translation support for banners and consents
+-   **Scanning Capabilities**: Domain and cookie scanning functionality
+-   **Authentication & Authorization**: Role-based access control with secure session management
+-   **External API Integration**: Support for external services
+-   **Archival System**: Archive and manage historical consent data
+-   **Logging & Instrumentation**: Comprehensive event logging and monitoring
+
+## Installations For Mac
 
 -   Node.js
     -   To install Node.js, you can visit the [official website nodejs](https://nodejs.org/) and download the installer for your Nodejs.
@@ -20,10 +37,58 @@
 -   To run the server run the command `node app.js`
 -   On local machine it's on port 5000 so you can use `localhost:5000`
 
-## ️Tech Stack
+## Setup
 
-Framework: ExpressJs (Nodejs)
-Database: PostgreSQL
+### Prerequisites
+
+-   Node.js v22 or higher
+-   PostgreSQL v16 or higher
+-   npm 
+
+### Local Development Setup
+
+1. **Clone the repository**
+
+    ```bash
+    git clone <repository-url>
+    cd cookie-manager-backend
+    ```
+
+2. **Install dependencies**
+
+    ```bash
+    npm install
+    ```
+
+3. **Configure environment variables**
+
+    - Copy the ENV variables from the ENVS section below
+    - Create a `.env` file in the root directory
+    - Add all required environment variables
+
+4. **Setup database**
+
+    ```bash
+    npx prisma migrate deploy
+    ```
+
+5. **Start the server**
+    ```bash
+    npm start
+    # or for development with auto-reload
+    npm run dev
+    ```
+
+### Development Mode
+
+In development mode (`NODE_ENV=development`), a dummy session is automatically created for testing purposes with the `privy_cgp_admin` role.
+
+## Tech Stack
+
+**Framework**: Express.js (Node.js)
+**Database**: PostgreSQL
+**ORM**: Prisma
+**API Authentication**: JWT (JSON Web Tokens)
 
 ## ENVS
 
