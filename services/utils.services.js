@@ -1,3 +1,14 @@
+/**
+ * Privy-OpenCMS
+ * Copyright (c) 2025 Baldor Technologies Private Limited (IDfy)
+ * 
+ * This software is licensed under the Privy Public License.
+ * See LICENSE.md for the full terms of use.
+ * 
+ * Unauthorized copying, modification, distribution, or commercial use
+ * is strictly prohibited without prior written permission from IDfy.
+ */
+
 import { UnexpectedError, ERROR_TYPE_SET } from './custom_error.js'
 import { INTERNAL_SERVER_ERROR_DICT, INTERNAL_SERVER_ERROR, ARCHIVAL_ACCESS_ROLES, ROLE_DISPLAY_NAMES, SCAN_ACCESS_ROLES } from './constants.js'
 import get from 'lodash/get.js'

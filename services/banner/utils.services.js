@@ -1,3 +1,14 @@
+/**
+ * Privy-OpenCMS
+ * Copyright (c) 2025 Baldor Technologies Private Limited (IDfy)
+ * 
+ * This software is licensed under the Privy Public License.
+ * See LICENSE.md for the full terms of use.
+ * 
+ * Unauthorized copying, modification, distribution, or commercial use
+ * is strictly prohibited without prior written permission from IDfy.
+ */
+
 import { createBannerJsFile } from './cookie_banner_creation.services.js'
 import { UnexpectedError } from '../custom_error.js'
 import { LANGUAGES_MAP_MASTER } from '../language_translation/constants.js'

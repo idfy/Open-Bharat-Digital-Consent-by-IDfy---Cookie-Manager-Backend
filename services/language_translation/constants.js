@@ -1,3 +1,14 @@
+/**
+ * Privy-OpenCMS
+ * Copyright (c) 2025 Baldor Technologies Private Limited (IDfy)
+ * 
+ * This software is licensed under the Privy Public License.
+ * See LICENSE.md for the full terms of use.
+ * 
+ * Unauthorized copying, modification, distribution, or commercial use
+ * is strictly prohibited without prior written permission from IDfy.
+ */
+
 // Master map of language codes to English labels
 import { ENGLISH_ENUM_VALUE } from '../constants.js'
 const LANGUAGES_MAP_MASTER = {
