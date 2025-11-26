@@ -8,7 +8,7 @@ import { bannerPreferenceScreen, bannerSkeleton } from './common_banner_elements
 import { extractLanguagesFromTemplate, extractCookieNamesAndDomains } from './utils.services.js'
 import { bannerInitialScreen0 } from './banner_elements.services.js'
 
-function createBannerFunction(template) {
+function createBannerFunction(template, cookiePolicy) {
     const languagesMap = extractLanguagesFromTemplate(template)
     const submitConsentHandler = 'submitConsent'
     const code = `
@@ -18,7 +18,7 @@ function createBannerFunction(template) {
     const languagesMap = ${JSON.stringify(languagesMap)}
     function createBanner(categorizedCookies, template, languageEnum) {
         let banner = \`
-        ${bannerInitialScreen0(languagesMap)}
+        ${bannerInitialScreen0(languagesMap, cookiePolicy)}
         ${bannerPreferenceScreen()}
         \`;
         return banner;
@@ -96,13 +96,13 @@ function submitConsentFunction(bannerId) {
     return code
 }
 
-function createBannerJsFile(template, categorizedCookies, bannerId, urlsMapping) {
-    const bannerFunction = generalCookieBanner(template, categorizedCookies, bannerId, urlsMapping)
+function createBannerJsFile(template, categorizedCookies, bannerId, urlsMapping, cookiePolicy) {
+    const bannerFunction = generalCookieBanner(template, categorizedCookies, bannerId, urlsMapping, cookiePolicy)
     const obfuscateJsFile = obfuscate(bannerFunction)
     return obfuscateJsFile
 }
 
-function generalCookieBanner(template, categorizedCookies, bannerId, urlsMapping) {
+function generalCookieBanner(template, categorizedCookies, bannerId, urlsMapping, cookiePolicy) {
     const autoBlockingContent = readFileSync(new URL('./auto_blocking.services.js', import.meta.url), 'utf8')
     const bannerFunctions = readFileSync(new URL('./banner_functions.services.js', import.meta.url), 'utf8')
     const minifiedCategorizedCookies = extractCookieNamesAndDomains(categorizedCookies)
@@ -111,14 +111,14 @@ function generalCookieBanner(template, categorizedCookies, bannerId, urlsMapping
         const categorizedCookies = ${JSON.stringify(minifiedCategorizedCookies)};
         const tagsList = ${JSON.stringify(urlsMapping)};
         ${submitConsentFunction(bannerId)}
-        ${commonBanner(template, bannerId)}
+        ${commonBanner(template, bannerId, cookiePolicy)}
         ${bannerFunctions}
         ${autoBlockingContent}
     `
     return bannerFunction
 }
 
-function commonBanner(template, bannerId) {
+function commonBanner(template, bannerId, cookiePolicy = 'abc.com') {
     const commonBannerElements = readFileSync(new URL('./common_banner_functions.services.js', import.meta.url), 'utf8')
     const bannerFunction = `
         const template = ${JSON.stringify(template)};
@@ -132,7 +132,7 @@ function commonBanner(template, bannerId) {
         const bannerSessionId = getSessionId()
         ${sendEventDetails(bannerId)}
         ${commonBannerElements} 
-        ${createBannerFunction(JSON.stringify(template))} 
+        ${createBannerFunction(JSON.stringify(template), cookiePolicy)} 
         ${bannerSkeleton(bannerId)} 
         `
     return bannerFunction

@@ -20,6 +20,7 @@ import { logger } from '../logger/instrumentation.services.js'
 import { addMissingValues } from '../templates/template.services.js'
 import { multiLangTemplateTextToUIConfig } from '../templates/utils.js'
 import { LANGUAGES_LIST_MASTER } from '../language_translation/constants.js'
+import { getConfigByDomainAndType } from '../db/domain_config.service.js'
 import fs from 'fs'
 import path from 'path'
 
@@ -152,7 +153,7 @@ async function changeBannerStatusHandler(userId, domainId, bannerId, status, tem
             newBannerDetails = await updateBanner(domainId, bannerId, data)
             transactionSuccess = true
         }
-        makeJSFile(scanId, domainId, bannerId, newBannerDetails.template_id)
+        await makeJSFile(scanId, domainId, bannerId, newBannerDetails.template_id)
         bannerUpdateLog(transactionSuccess, oldActiveBannerDetails, newBannerDetails, logDict, domainId, status)
         return results
     } catch (error) {
@@ -406,6 +407,7 @@ async function unarchiveBannerHandler(bannerId, adminUserId) {
 
 async function makeJSFile(scanId, domainId, bannerId, templateId) {
     await getScanById(scanId, domainId)
+    const cookiePolicy = await getConfigByDomainAndType(domainId, 'cookie_policy_url')
     let cookieData = await getCookieDetailsByScanId(scanId, ['en'], false)
     cookieData = moveNecessaryFirst(cookieData)
     const scriptPath = `assets/${domainId}/${bannerId}.js`
@@ -413,7 +415,7 @@ async function makeJSFile(scanId, domainId, bannerId, templateId) {
     const template = { ...nonTextConfig, text: multiLangTemplateTextToUIConfig(textEntriesByLanguage) }
     bannerCreationChecks(cookieData)
     const completeTemplate = addMissingValues(template)
-    const jsFile = scriptHandler(completeTemplate, cookieData, scriptPath, bannerId)
+    const jsFile = scriptHandler(completeTemplate, cookieData, scriptPath, bannerId, cookiePolicy)
     // Write the file to the filesystem
     writeFile(scriptPath, jsFile)
     return jsFile

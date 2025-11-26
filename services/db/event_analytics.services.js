@@ -1,4 +1,4 @@
-import prisma from '../db/config.js'
+import prisma from './config.js'
 import { UnexpectedError } from '../custom_error.js'
 
 async function createEventAnalytics(data) {
