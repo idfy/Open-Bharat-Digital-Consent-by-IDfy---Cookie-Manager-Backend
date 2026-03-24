@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AddedBySource {
+  SCAN
+  MANUAL
+}
+
+enum ScanType {
+  manual
+  periodic
+}
+
+enum BannerStatus {
+  active
+  inactive
+  testing
+}
+
+enum Status {
+  failed
+  completed
+  in_progress
+  categorizing_cookies
+  active
+  testing
+}
+
+enum CookieCategory {
+  NECESSARY
+  FUNCTIONAL
+  ANALYTICS
+  PERFORMANCE
+  MARKETING
+  OTHER
+}
+
+enum TemplateAttribute {
+  accept_all_button_text
+  more_settings_button_text
+  save_preferences_button_text
+  allow_necessary_button_text
+  cookie_banner_notice
+  reference_manager_notice
+  initial_notice_header
+  preference_notice_header
+  necessary_category_description
+  functional_category_description
+  analytics_category_description
+  marketing_category_description
+}
+
+model Domain {
+  domain_id          String          @id @default(uuid()) @db.Uuid
+  url                String
+  config             Json?
+  screenshot_path    String?
+  created_at         DateTime        @default(now()) @db.Timestamptz
+  updated_at         DateTime        @updatedAt @db.Timestamptz
+  Scan               Scan[]
+  Banner             Banner[]
+  CookieMaster       CookieMaster[]
+  Config             Config[]
+  @@unique(url)
+}
+
+model Scan {
+  scan_id                  String          @id @default(uuid()) @db.Uuid
+  name                     String
+  domain_id                String          @db.Uuid
+  domain                   Domain          @relation(fields: [domain_id], references: [domain_id])
+  meta_data                Json?
+  type                     ScanType        @default(manual)
+  status                   Status          @default(in_progress)
+  archived_at              DateTime?       @db.Timestamptz
+  archived_by              String?         @db.Uuid
+  created_at               DateTime        @default(now()) @db.Timestamptz
+  updated_at               DateTime        @updatedAt @db.Timestamptz
+  Banner                   Banner[]
+  Cookie                   Cookie[]
+
+  @@index([domain_id])
+}
+
+model Template {
+  template_id        String          @id @default(uuid()) @db.Uuid
+  name               String
+  value              Json
+  languages          Json
+  status             Boolean         @default(true)
+  archived_at        DateTime?       @db.Timestamptz
+  archived_by        String?         @db.Uuid
+  created_at         DateTime        @default(now()) @db.Timestamptz
+  updated_at         DateTime        @updatedAt @db.Timestamptz
+  Banner             Banner[]
+
+  TemplatesLanguages TemplatesLanguages[]
+}
+
+model TemplatesLanguages {
+  language_id   String        @id @default(uuid()) @db.Uuid
+  template_id   String        @db.Uuid
+  template      Template      @relation(fields: [template_id], references: [template_id], onDelete: Cascade)
+  language      String
+  attribute     TemplateAttribute
+  translation_uuid String?     @db.Uuid
+  value         String
+  created_at    DateTime      @default(now()) @db.Timestamptz
+  updated_at    DateTime      @updatedAt @db.Timestamptz
+  @@index([template_id])
+  @@unique([template_id, language, attribute])
+
+}
+
+model Banner {
+  banner_id                     String          @id @default(uuid()) @db.Uuid
+  template_id                   String          @db.Uuid
+  template                      Template        @relation(fields: [template_id], references: [template_id])
+  name                          String
+  status                        BannerStatus    @default(inactive)
+  script_path                   String
+  domain_id                     String          @db.Uuid
+  domain                        Domain          @relation(fields: [domain_id], references: [domain_id])
+  scan_id                       String          @db.Uuid
+  scan                          Scan            @relation(fields: [scan_id], references: [scan_id])
+  archived_at                   DateTime?       @db.Timestamptz
+  archived_by                   String?         @db.Uuid
+  created_at                    DateTime        @default(now()) @db.Timestamptz
+  updated_at                    DateTime        @updatedAt @db.Timestamptz
+
+  SubmittedCookieConsent SubmittedCookieConsent[]
+  EventAnalytics EventAnalytics[]
+
+}
+
+
+model Cookie {
+  cookie_id        String        @id @default(uuid()) @db.Uuid
+  scan_id          String        @db.Uuid
+  scan             Scan          @relation(fields: [scan_id], references: [scan_id])
+  cookie_master_id String        @db.Uuid
+  cookie_master    CookieMaster  @relation(fields: [cookie_master_id], references: [cookie_master_id])
+  meta_data        Json?
+  created_at       DateTime      @default(now()) @db.Timestamptz
+  updated_at       DateTime      @updatedAt @db.Timestamptz
+  added_by_source  AddedBySource @default(SCAN)
+  
+  @@unique([scan_id, cookie_master_id])
+  @@index([scan_id])
+}
+
+model CookieMasterLanguage {
+  language_id      String       @id @default(uuid()) @db.Uuid
+  cookie_master_id String       @db.Uuid
+  language         String
+  name             String
+  description      String
+  domain_id        String       @db.Uuid
+  cookie_master    CookieMaster @relation(fields: [cookie_master_id], references: [cookie_master_id])
+  created_at       DateTime     @default(now()) @db.Timestamptz
+  updated_at       DateTime     @updatedAt @db.Timestamptz
+}
+
+model CookieMaster {
+  cookie_master_id     String                 @id @default(uuid()) @db.Uuid
+  domain_id            String                 @db.Uuid
+  domain               Domain                 @relation(fields: [domain_id], references: [domain_id])
+  cookie_domain        String                 
+  category             CookieCategory
+  name                 String
+  created_at           DateTime               @default(now()) @db.Timestamptz
+  updated_at           DateTime               @updatedAt @db.Timestamptz
+  Cookie               Cookie[]
+  CookieMasterLanguage CookieMasterLanguage[]
+
+  @@unique([name, domain_id, cookie_domain])
+  @@index([name, domain_id, cookie_domain])
+}
+
+model SubmittedCookieConsent {
+  id                 String       @id @default(uuid()) @db.Uuid
+  banner_id          String       @db.Uuid
+  data_principal_id  String
+  banner             Banner       @relation(fields: [banner_id], references: [banner_id])
+  submitted_data     Json
+  metadata           Json
+  created_at         DateTime     @default(now()) @db.Timestamptz
+  updated_at         DateTime     @updatedAt @db.Timestamptz
+  @@index([banner_id])     
+  @@index([created_at])
+}
+model EventAnalytics {
+    id                 String       @id @default(uuid()) @db.Uuid
+    banner_id          String       @db.Uuid
+    banner             Banner       @relation(fields: [banner_id], references: [banner_id])
+    data_principal_id  String
+    user_event         String   
+    session_id         String
+    created_at         DateTime     @default(now()) @db.Timestamptz
+    updated_at         DateTime     @updatedAt @db.Timestamptz
+}
+
+model Config {
+    id                 String       @id @default(uuid()) @db.Uuid
+    domain_id          String       @db.Uuid
+    domain             Domain       @relation(fields: [domain_id], references: [domain_id])
+    type               String       
+    value              String   
+    created_at         DateTime     @default(now()) @db.Timestamptz
+    updated_at         DateTime     @updatedAt @db.Timestamptz
+    @@index([domain_id])
+    @@unique([domain_id, type])
+}
