@@ -1,5 +1,5 @@
 /**
- * Privy-OpenCMS
+ * Open Bharat Digital Consent by IDfy
  * Copyright (c) 2025 Baldor Technologies Private Limited (IDfy)
  * 
  * This software is licensed under the Privy Public License.
